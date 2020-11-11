@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/Food.dir/src/Food.cpp.o  -o Food 

@@ -1,0 +1,3 @@
+/home/ewi/School/IEP/ProiectS7/build/CMakeFiles/rebuild_cache.dir
+/home/ewi/School/IEP/ProiectS7/build/CMakeFiles/edit_cache.dir
+/home/ewi/School/IEP/ProiectS7/build/CMakeFiles/Food.dir
