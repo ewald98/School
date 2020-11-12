@@ -6,16 +6,19 @@ public class Configuration {
 
     private int port;
     private String webroot;
-    private String maintenanceDirectory;
+    private String maintenanceFile;
     private String errorFile;
     private String defaultFile;
 
-    public Configuration(int port, String webroot, String maintenanceDirectory, String defaultFile, String errorFile) {
+    private String maintenanceFolder;
+
+    public Configuration(int port, String webroot, String maintenanceFile, String defaultFile, String errorFile, String maintenanceFolder) {
         this.port = port;
         this.webroot = webroot;
-        this.maintenanceDirectory = maintenanceDirectory;
+        this.maintenanceFile = maintenanceFile;
         this.defaultFile = defaultFile;
         this.errorFile = errorFile;
+        this.maintenanceFolder = maintenanceFolder;
     }
 
     public int getPort() {
@@ -34,12 +37,12 @@ public class Configuration {
         this.webroot = webroot;
     }
 
-    public String getMaintenanceDirectory() {
-        return maintenanceDirectory;
+    public String getMaintenanceFile() {
+        return maintenanceFile;
     }
 
-    public void setMaintenanceDirectory(String maintenanceDirectory) {
-        this.maintenanceDirectory = maintenanceDirectory;
+    public void setMaintenanceFile(String maintenanceFile) {
+        this.maintenanceFile = maintenanceFile;
     }
 
     public String getErrorFile() {
@@ -58,6 +61,14 @@ public class Configuration {
         this.defaultFile = defaultFile;
     }
 
+    public String getMaintenanceFolder() {
+        return maintenanceFolder;
+    }
+
+    public void setMaintenanceFolder(String maintenanceFolder) {
+        this.maintenanceFolder = maintenanceFolder;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,11 +76,11 @@ public class Configuration {
         Configuration that = (Configuration) o;
         return port == that.port &&
                 Objects.equals(webroot, that.webroot) &&
-                Objects.equals(maintenanceDirectory, that.maintenanceDirectory);
+                Objects.equals(maintenanceFile, that.maintenanceFile);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(port, webroot, maintenanceDirectory);
+        return Objects.hash(port, webroot, maintenanceFile);
     }
 }

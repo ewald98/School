@@ -16,10 +16,26 @@ class WebServerPathTest {
     }
 
     @Test
-    void assemble() {
+    void testGetters() {
+        WebServerPath path01 = new WebServerPath("test%2001.html"); // clearly, file
+        WebServerPath path02 = new WebServerPath("/upt/vvs/");  // clearly, folder
+        WebServerPath path03 = new WebServerPath("/not_working");   // file, but it won't work bc we only allow files with extensions
 
-
-
+        assertAll(
+                () -> assertEquals("test 01.html", path01.getRawPath()),
+                () -> assertEquals("test 01.html", path01.getRequestedPath()),
+                () -> assertEquals("www/test 01.html", path01.getLocalRequestedPath())
+        );
+        assertAll(
+                () -> assertEquals("/upt/vvs/", path02.getRawPath()),
+                () -> assertEquals("/upt/vvs/index.html", path02.getRequestedPath()),
+                () -> assertEquals("www/upt/vvs/index.html", path02.getLocalRequestedPath())
+        );
+        assertAll(
+                () -> assertEquals("/not_working", path03.getRawPath()),
+                () -> assertEquals("/not_working", path03.getRequestedPath()),
+                () -> assertEquals("www/not_working", path03.getLocalRequestedPath())
+        );
     }
 
     @Test
@@ -44,6 +60,11 @@ class WebServerPathTest {
     @Test
     void testGetErrorFileLocalPath() {
         assertEquals("www/404.html", WebServerPath.getErrorWebServerPath().getLocalRequestedPath());
+    }
+
+    @Test
+    void testGetMaintenanceFileLocalPath() {
+        assertEquals("maintenanceFolder/maintenance.html", WebServerPath.getMaintenanceWebServerPath().getLocalRequestedPath());
     }
 
 }

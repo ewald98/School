@@ -9,9 +9,11 @@ import java.util.StringTokenizer;
 public class WebServerThread extends Thread {
 
     private final Socket clientSocket;
+    private final Server mainServer;
 
-    WebServerThread(Socket clientSoc) {
-        clientSocket = clientSoc;
+    WebServerThread(Socket clientSoc, Server mainServer) {
+        this.clientSocket = clientSoc;
+        this.mainServer = mainServer;
         start();
     }
 
@@ -36,7 +38,9 @@ public class WebServerThread extends Thread {
 
             System.out.println("here is the request:" + input);
 
-            if (!method.equals("GET") && !method.equals("HEAD")) {  // method not implemented
+            if (mainServer.getServerState() == Server.STATUS.MAINTENANCE) {
+                respond(WebServerPath.getMaintenanceWebServerPath(), out, dataOut);
+            } else if (!method.equals("GET") && !method.equals("HEAD")) {  // method not implemented
                 respond(WebServerPath.getErrorWebServerPath(), out, dataOut);
             } else {
                 if (method.equals("GET"))

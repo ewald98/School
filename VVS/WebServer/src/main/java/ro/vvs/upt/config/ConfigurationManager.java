@@ -40,9 +40,9 @@ public class ConfigurationManager {
             }
         }
 
-        if (lines.size() != 5) throw new ConfigurationFileException("invalid configuration file");
+        if (lines.size() != 6) throw new ConfigurationFileException("invalid configuration file");
 
-        currentConfig = new Configuration(Integer.parseInt(lines.get(0)), lines.get(1), lines.get(2), lines.get(3), lines.get(4));
+        currentConfig = new Configuration(Integer.parseInt(lines.get(0)), lines.get(1), lines.get(2), lines.get(3), lines.get(4), lines.get(5));
 
     }
 

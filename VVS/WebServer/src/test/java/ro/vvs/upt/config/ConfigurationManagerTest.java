@@ -22,9 +22,10 @@ class ConfigurationManagerTest {
         assertAll(
                 () -> assertEquals(10008, config.getPort()),
                 () -> assertEquals("www", config.getWebroot()),
-                () -> assertEquals("test_", config.getMaintenanceDirectory()),
+                () -> assertEquals("maintenance.html", config.getMaintenanceFile()),
                 () -> assertEquals("index.html", config.getDefaultFile()),
-                () -> assertEquals("404.html", config.getErrorFile())
+                () -> assertEquals("404.html", config.getErrorFile()),
+                () -> assertEquals("maintenanceFolder", config.getMaintenanceFolder())
         );
     }
 
