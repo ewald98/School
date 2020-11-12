@@ -1,7 +1,6 @@
 package ro.vvs.upt;
 
-import ro.vvs.upt.config.Configuration;
-import ro.vvs.upt.config.ConfigurationManager;
+import ro.vvs.upt.utils.WebServerPath;
 
 import java.io.*;
 import java.net.Socket;
@@ -9,8 +8,7 @@ import java.util.StringTokenizer;
 
 public class WebServerThread extends Thread {
 
-    private Socket clientSocket;
-    private static final String CRLF = "\r\n";
+    private final Socket clientSocket;
 
     WebServerThread(Socket clientSoc) {
         clientSocket = clientSoc;
@@ -23,12 +21,8 @@ public class WebServerThread extends Thread {
         PrintWriter out = null;
         BufferedOutputStream dataOut = null;
 
-        String fileRequested = null;
-
-        Configuration config = ConfigurationManager.getInstance().getCurrentConfig();
         try {
-
-            System.out.println(" !!! New Communication Thread Started, on " + clientSocket.getInetAddress());
+            System.out.println("!!! New Communication Thread Started, on " + clientSocket.getInetAddress());
 
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             out = new PrintWriter(clientSocket.getOutputStream());      // for header
@@ -37,85 +31,22 @@ public class WebServerThread extends Thread {
             String input = in.readLine();
             StringTokenizer parse = new StringTokenizer(input);
             String method = parse.nextToken().toUpperCase();
-            fileRequested = parse.nextToken().toLowerCase();
 
-            if (!method.equals("GET") && !method.equals("HEAD")) {
-//                throw new RuntimeException("501: Method not implemented" + method);
+            WebServerPath webServerPath = new WebServerPath(parse.nextToken().toLowerCase());
 
-                File file = new File(config.getWebroot(), config.getErrorFile());
-                int fileLength = (int) file.length();
-                String contentMimeType = "text/html";
-                byte[] fileData = readFileData(file, fileLength);
+            System.out.println("here is the request:" + input);
 
-                out.println("HTTP/1.1 404 Error:Not found/Method not implemented");
-                out.println("Server: JHTTP Server xDD");
-                out.println("Content-type: " + contentMimeType);
-                out.println("Content-length: " + fileLength);
-                out.println();
-                out.flush();
-
-                dataOut.write(fileData, 0, fileLength);
-                dataOut.flush();
+            if (!method.equals("GET") && !method.equals("HEAD")) {  // method not implemented
+                respond(WebServerPath.getErrorWebServerPath(), out, dataOut);
             } else {
-                if (fileRequested.endsWith("/")) {
-                    fileRequested += config.getDefaultFile();
-                }
-
-                File file = new File(config.getWebroot(), fileRequested);
-                int fileLength = (int) file.length();
-                String content = getContentType(fileRequested);
-
-                if (method.equals("GET")) {
-                    byte[] fileData = readFileData(file, fileLength);
-
-                    out.println("HTTP/1.1 200 OK");
-                    out.println("Server: JHTTP Server xDD");
-                    out.println("Content-type: " + content);
-                    out.println("Content-length: " + fileLength);
-                    out.println();
-                    out.flush();
-
-                    dataOut.write(fileData, 0, fileLength);
-                    dataOut.flush();
-                }
-
-                System.out.println("File" + fileRequested + " of type " + content + " returned");
-
+                if (method.equals("GET"))
+                    respond(webServerPath, out, dataOut);
             }
 
-//            String html = "<html><head><title>Java HTTP</title></head><body><h1>This page was server by my Java server</h1></body></html>";
-//
-//            String response =
-//                    "HTTP/1.1 200 OK" + CRLF +  // Status line
-//                            "Content-Length: " + html.getBytes().length + CRLF +  // Header (content length)
-//                            CRLF +
-//                            html +
-//                            CRLF + CRLF;
-//
-//            os.write(response.getBytes());
-
-        } catch (FileNotFoundException e) {
-
+        } catch (FileNotFoundException e) { // file not found
             try {
-                File file = new File(config.getWebroot(), config.getErrorFile());
-                int fileLength = (int) file.length();
-                String contentMimeType = "text/html";
-                byte[] fileData = readFileData(file, fileLength);
-
-                out.println("HTTP/1.1 404 Error:Not found/Method not implemented");
-                out.println("Server: JHTTP Server xDD");
-                out.println("Content-type: " + contentMimeType);
-                out.println("Content-length: " + fileLength);
-                out.println();
-                out.flush();
-
-                dataOut.write(fileData, 0, fileLength);
-                dataOut.flush();
-            } catch (IOException e1) {
-
-            }
-
-
+                respond(WebServerPath.getErrorWebServerPath(), out, dataOut);
+            } catch (IOException ioException) { }
         } catch (IOException e) {
             System.err.println("Problem with Communication Server");
             System.exit(1);
@@ -136,6 +67,27 @@ public class WebServerThread extends Thread {
         }
     }
 
+    private void respond(WebServerPath webServerPath, PrintWriter out, BufferedOutputStream dataOut) throws IOException {
+        File file = new File(webServerPath.getLocalRequestedPath());
+        int fileLength = (int) file.length();
+        String contentType = getContentType(webServerPath.getRequestedPath());
+
+        byte[] fileData = readFileData(file, fileLength);
+
+        out.println("HTTP/1.1 200 OK");
+        out.println("Server: JHTTP Server xDD");
+        out.println("Content-type: " + contentType);
+        out.println("Content-length: " + fileLength);
+        out.println();
+        out.flush();
+
+        dataOut.write(fileData, 0, fileLength);
+        dataOut.flush();
+
+        System.out.println("File " + webServerPath.getRequestedPath() + " of type " + contentType + " returned");
+
+    }
+
     private byte[] readFileData(File file, int fileLength) throws IOException {
         FileInputStream fileIn = null;
         byte[] fileData = new byte[fileLength];
@@ -151,8 +103,7 @@ public class WebServerThread extends Thread {
         return fileData;
     }
 
-    // return supported MIME Types
-    private String getContentType(String fileRequested) {
+    private String getContentType(String fileRequested) { // return supported MIME Types
         if (fileRequested.endsWith(".htm") || fileRequested.endsWith(".html"))
             return "text/html";
         else

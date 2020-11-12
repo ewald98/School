@@ -28,7 +28,6 @@ public class ConfigurationManager {
         try {
             input = new Scanner(new File(filePath)).useDelimiter("\n");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
             throw new ConfigurationFileException("file not found");
         }
 

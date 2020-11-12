@@ -8,7 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
 
-public class WebServer {
+public class Server {
 
     public static void main(String[] args) {
 
