@@ -1,6 +1,6 @@
 10008
 www
 maintenance.html
-a.html
+index.html
 error.html
 maintenance

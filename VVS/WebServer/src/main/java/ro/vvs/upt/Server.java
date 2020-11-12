@@ -33,7 +33,8 @@ public class Server extends Thread {
         // to stop listening we need to close the serverSocket
         if (serverState == STATUS.STOPPED) {
             try {
-                serverSocket.close();
+                if (serverSocket != null)
+                    serverSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

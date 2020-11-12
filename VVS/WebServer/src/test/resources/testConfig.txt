@@ -1,5 +1,5 @@
 10008
-www
+src/test/resources/www
 maintenance.html
 index.html
 404.html
