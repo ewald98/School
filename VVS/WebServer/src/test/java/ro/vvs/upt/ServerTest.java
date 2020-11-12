@@ -10,13 +10,32 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ServerTest {
 
+    private Server server;
+
     @BeforeEach
     public void setup() {
         ConfigurationManager.getInstance().loadConfigurationFile("src/test/resources/testConfig.txt");
 
-        Server server = new Server();
+        server = new Server();
         server.setServerState(Server.STATUS.RUNNING);
         server.start();
+    }
+
+    @Test
+    public void testServerState() {
+        try {
+            sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(Server.STATUS.RUNNING, server.getServerState());
+
+        server.setServerState(Server.STATUS.MAINTENANCE);
+        assertEquals(Server.STATUS.MAINTENANCE, server.getServerState());
+
+        server.setServerState(Server.STATUS.STOPPED);
+        assertEquals(Server.STATUS.STOPPED, server.getServerState());
     }
 
     @Test

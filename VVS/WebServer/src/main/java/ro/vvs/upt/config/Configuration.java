@@ -68,19 +68,4 @@ public class Configuration {
     public void setMaintenanceFolder(String maintenanceFolder) {
         this.maintenanceFolder = maintenanceFolder;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Configuration that = (Configuration) o;
-        return port == that.port &&
-                Objects.equals(webroot, that.webroot) &&
-                Objects.equals(maintenanceFile, that.maintenanceFile);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(port, webroot, maintenanceFile);
-    }
 }

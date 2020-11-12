@@ -24,17 +24,17 @@ class WebServerPathTest {
         assertAll(
                 () -> assertEquals("test 01.html", path01.getRawPath()),
                 () -> assertEquals("test 01.html", path01.getRequestedPath()),
-                () -> assertEquals("www/test 01.html", path01.getLocalRequestedPath())
+                () -> assertEquals("src/test/resources/www/test 01.html", path01.getLocalRequestedPath())
         );
         assertAll(
                 () -> assertEquals("/upt/vvs/", path02.getRawPath()),
                 () -> assertEquals("/upt/vvs/index.html", path02.getRequestedPath()),
-                () -> assertEquals("www/upt/vvs/index.html", path02.getLocalRequestedPath())
+                () -> assertEquals("src/test/resources/www/upt/vvs/index.html", path02.getLocalRequestedPath())
         );
         assertAll(
                 () -> assertEquals("/not_working", path03.getRawPath()),
                 () -> assertEquals("/not_working", path03.getRequestedPath()),
-                () -> assertEquals("www/not_working", path03.getLocalRequestedPath())
+                () -> assertEquals("src/test/resources/www/not_working", path03.getLocalRequestedPath())
         );
     }
 
@@ -48,8 +48,8 @@ class WebServerPathTest {
             Method method = c.getDeclaredMethod("addWebRootPrefix", cArg);
             method.setAccessible(true);
             assertAll(
-                    () -> assertEquals("www/a.html", method.invoke(null, "a.html")),
-                    () -> assertEquals("www/default.html", method.invoke(null, "default.html"))
+                    () -> assertEquals("src/test/resources/www/a.html", method.invoke(null, "a.html")),
+                    () -> assertEquals("src/test/resources/www/default.html", method.invoke(null, "default.html"))
             );
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -59,7 +59,7 @@ class WebServerPathTest {
 
     @Test
     void testGetErrorFileLocalPath() {
-        assertEquals("www/404.html", WebServerPath.getErrorWebServerPath().getLocalRequestedPath());
+        assertEquals("src/test/resources/www/404.html", WebServerPath.getErrorWebServerPath().getLocalRequestedPath());
     }
 
     @Test

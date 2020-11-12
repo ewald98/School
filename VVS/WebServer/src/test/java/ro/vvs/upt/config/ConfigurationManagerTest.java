@@ -21,7 +21,7 @@ class ConfigurationManagerTest {
         Configuration config = ConfigurationManager.getInstance().getCurrentConfig();
         assertAll(
                 () -> assertEquals(10008, config.getPort()),
-                () -> assertEquals("www", config.getWebroot()),
+                () -> assertEquals("src/test/resources/www", config.getWebroot()),
                 () -> assertEquals("maintenance.html", config.getMaintenanceFile()),
                 () -> assertEquals("index.html", config.getDefaultFile()),
                 () -> assertEquals("404.html", config.getErrorFile()),
